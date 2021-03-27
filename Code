@@ -1,0 +1,291 @@
+from tkinter import *
+
+import pickle
+
+
+class RestaurantReservationSystem(Frame):
+    def __init__(self, parent):
+        Frame.__init__(self, parent)
+        self.parent = parent
+
+        self.key= 1
+        self.k_key=1
+
+        # data for table
+        try:
+            self.data_d = open("data_ss", "rb")
+            self.data_list = pickle.load(self.data_d)
+            print(self.data_list)
+        except:
+            self.data_d = open("data_ss","wb")
+            print("created-----")
+
+            self.key = 0
+        #data for user
+        try:
+            self.data_us = open("data_us", "rb")
+            self.data_list_us = pickle.load(self.data_us)
+            print(self.data_list_us)
+        except:
+            self.data_us = open("data_us","wb")
+            print("created-----")
+            self.k_key=0
+
+
+        self.initUI()
+
+        self.pack(fill=BOTH)
+
+
+
+
+
+    def initUI(self):
+        frame = Frame(self)
+        frame.pack(fill=X)
+        frame2 = Frame(self)
+        frameborder = Frame(self, highlightbackground="black", highlightthickness=2)
+
+        frame3 = Frame(self)
+        frame4 = Frame(self)
+        frame5 = Frame(self)
+        frame2.pack(fill=X, padx=10)
+        frameborder.pack(fill=X, pady=10, padx=5)
+        frame3.pack(fill=X, pady=20, padx=20, in_=frameborder)
+        frame4.pack(fill=X, pady=10, padx=20, in_=frameborder)
+        frame5.pack(fill=X, pady=20, padx=20, in_=frameborder)
+
+        self.hdr = Label(self, text="Restaurant Reservation System", bg="#6984CE", fg="white", font=("", 20))
+        self.hdr.pack(in_=frame, fill=X)
+
+        self.table = Label(self, text="Table:")
+        self.table.pack(in_=frame2, side=LEFT, pady=8)
+        self.var_tablenumber = StringVar()
+        self.var_tablenumber.set("[None Selected]")
+        self.table_num = Label(self, textvariable=self.var_tablenumber)
+        self.table_num.pack(in_=frame2, side=LEFT, padx=10)
+
+        self.customer_label = Label(self, text="Customer Name:")
+        self.customer_label.pack(in_=frame2, side=LEFT, padx=2)
+
+        self.entry_var = StringVar()
+        self.customer_entry = Entry(self, bd=2, textvariable=self.entry_var)
+        self.customer_entry.pack(in_=frame2, side=LEFT, padx=8)
+
+        self.customer_phone_label = Label(self, text="Customer Phone Number:")
+        self.customer_phone_label.pack(in_=frame2, side=LEFT, padx=5, pady=10)
+
+        self.entry2_var = StringVar()
+        self.customer_phone_entry = Entry(self, bd=2,textvariable=self.entry2_var)
+        self.customer_phone_entry.pack(in_=frame2, side=LEFT, padx=8)
+
+        self.save_button = Button(self, text="Save/Update Reservation", command=self.save_click)
+        self.save_button.pack(in_=frame2, side=LEFT, padx=10)
+        self.save_button.bind(self.save_click)
+
+        self.delete_res_button = Button(self, text="Delete Reservation")
+        self.delete_res_button.pack(in_=frame2, side=LEFT, pady=10)
+        self.delete_res_button.bind("<Button-1>", self.delete_click)
+
+        self.warning_var = StringVar()
+        self.warning_label = Label(self, textvariable=self.warning_var, font=("", 20))
+        self.warning_label.pack(in_=frame2, padx=5, pady=10, side=LEFT)
+
+        self.butt = []
+
+        self.i = 1
+        for i in range(5):
+            self.button = Button(self, text=str(self.i), width=13, height=3, bg="#25F744", relief="solid")
+            self.button.bind("<Button-1>", self.on_click)
+            self.butt.append(self.button)
+            self.i += 1
+
+            self.button.pack(in_=frame3, side=LEFT, padx=10)
+
+        print(self.butt)
+        self.i = 6
+        for i in range(5):
+            self.button = Button(self, text=str(self.i), width=13, height=3, bg="#25F744", relief="solid")
+            self.butt.append(self.button)
+            self.i += 1
+            self.button.pack(in_=frame4, side=LEFT, padx=10)
+            self.button.bind("<Button-1>", self.on_click)
+
+        self.i = 11
+        for i in range(5):
+            self.button = Button(self, text=str(self.i), width=13, height=3, bg="#25F744", relief="solid")
+            self.butt.append(self.button)
+            self.i += 1
+            self.button.pack(in_=frame5, side=LEFT, padx=10)
+            self.button.bind("<Button-1>", self.on_click)
+
+        if self.key==1:
+            for i in range(15):  # control
+
+                if str(self.butt[i]) in list(self.data_list.keys()):
+                    print(self.butt[i])
+                    print("red detected")
+                    self.butt[i].configure(bg="red")
+
+            # button.bind("<Button-1>", self.on_click)
+
+    def reset_warning(self):
+        self.warning_label.configure(self.warning_var.set(""),
+                                     bg="SystemButtonFace")  # I found default bg command on stackoverflow.
+        print("test")
+        self.data_d = open("data_ss", "rb")
+        print(pickle.load(self.data_d))
+        self.k_key = 1
+
+
+
+    def on_click(self, event):
+        widget = event.widget
+
+        self.var_tablenumber.set(widget["text"])
+
+        if self.k_key == 1:
+
+                for i in range(len(list(self.data_list_us.values()))):
+                    if widget["text"] == list(self.data_list_us.values())[i]:
+                        self.entry_var.set(list(self.data_list_us.keys())[i][0])
+                        self.entry2_var.set(list(self.data_list_us.keys())[i][1])
+                        print("ttt*****")
+                    # else:
+                    #      self.entry_var.set("")
+                    #      self.entry2_var.set("")
+
+
+
+    def save_click(self):
+
+        if self.var_tablenumber.get() == "[None Selected]":
+            self.warning_label.configure(bg="red", font=("", 10), fg="white")
+            self.warning_var.set("First select a table.")
+
+            self.update_idletasks()
+            self.updating = self.after(1300, self.reset_warning)
+
+        else:
+            if self.customer_entry.get() == "" or self.customer_phone_entry.get() == "":
+                self.warning_var.set("Incomplete info.")
+                self.warning_label.configure(bg="red", fg="white", font=("", 15))
+                self.update_idletasks()
+                self.updating = self.after(1300, self.reset_warning)
+
+            else:
+                if self.customer_phone_entry.get().isdigit():  # I learnt .isdigit() from geeksforgeeks.
+
+                    print("saved")
+
+                    print(self.var_tablenumber.get())
+                    print(str(self.butt[int(self.var_tablenumber.get()) - 1]))  # *****!!!!
+                    self.butt[int(self.var_tablenumber.get()) - 1]["bg"] = "red"
+
+                    self.warning_var.set("Reservation saved.")
+                    self.warning_label["text"] = self.warning_var.get()
+
+                    self.warning_label["bg"] = "green"
+                    self.warning_label["fg"] = "white"
+                    self.warning_label["font"] = ("", 13)
+
+                    self.data_d = open("data_ss", "wb")
+                    self.data_us = open("data_us", "wb")
+
+                    self.entry_var.set(self.entry_var.get())
+                    print(self.entry_var.get())
+                    self.entry2_var.set(self.entry2_var.get())
+                    print(self.entry2_var.get())
+
+                    try:
+                        self.data_list[str(self.butt[int(self.var_tablenumber.get()) - 1])] = "red"
+                        pickle.dump(self.data_list, self.data_d)  # data write
+                        self.data_d.close()
+                    except:
+                        self.data_list = {}
+                        pickle.dump(self.data_list,self.data_d)
+
+                        self.data_list[str(self.butt[int(self.var_tablenumber.get()) - 1])] = "red"
+                        pickle.dump(self.data_list, self.data_d)  # data write
+                        self.data_d.close()
+                    try:
+
+                        self.data_list_us [self.entry_var.get(), self.entry2_var.get()] = self.var_tablenumber.get()
+                        pickle.dump(self.data_list_us,self.data_us)
+                        self.data_us.close()
+                    except:
+                        self.data_list_us={}
+                        pickle.dump(self.data_list_us,self.data_us)
+
+                        self.data_list_us [self.entry_var.get(), self.entry2_var.get()] = self.var_tablenumber.get()
+                        pickle.dump(self.data_list_us, self.data_us)
+                        self.data_us.close()
+
+                    self.qq = open("data_ss", "rb")  # data read
+                    # print(pickle.load(self.qq))
+
+                    self.update_idletasks()
+                    self.updating = self.after(1300, self.reset_warning)
+                else:
+                    self.warning_var.set("Phone Num. can be digits only.")
+                    self.warning_label.configure(bg="red", fg="white", font=("", 10))
+                    self.update_idletasks()
+                    self.updating = self.after(1300, self.reset_warning)
+
+    def delete_click(self, event):
+        widget = event.widget
+
+        if self.var_tablenumber.get() == "[None Selected]":
+            self.warning_label.configure(bg="red", font=("", 10), fg="white")
+            self.warning_var.set("First select a table.")
+
+            self.update_idletasks()
+            self.updating = self.after(1300, self.reset_warning)
+
+
+        elif self.butt[int(self.var_tablenumber.get()) - 1]["bg"] == "#25F744":
+            self.warning_var.set("Table is not reserved.")
+            self.warning_label.configure(bg="red", font=("", 10), fg="white")
+
+            self.update_idletasks()
+            self.updating = self.after(1300, self.reset_warning)
+
+
+        else:
+            self.butt[int(self.var_tablenumber.get()) - 1]["bg"] = "#25F744"
+            self.warning_var.set("Reservation Deleted!")
+            self.warning_label["text"] = self.warning_var.get()
+            self.warning_label["bg"] = "red"
+            self.warning_label["fg"] = "white"
+            self.warning_label["font"] = ("", 13)
+
+            # data delete
+            self.data_d = open("data_ss", "wb")
+
+            del self.data_list[str(self.butt[int(self.var_tablenumber.get()) - 1])]
+            pickle.dump(self.data_list, self.data_d)  # data write
+            self.data_d.close()
+
+            self.data_d = open("data_ss", "rb")
+            print(pickle.load(self.data_d))
+
+            self.data_us = open("data_us","wb")
+
+            del self.data_list_us[self.entry_var.get(),self.entry2_var.get()]
+            pickle.dump(self.data_list_us,self.data_us)
+            self.data_us.close()
+
+
+            self.update_idletasks()
+            self.updating = self.after(1300, self.reset_warning)
+
+
+def main():
+    root = Tk()
+    root.geometry("1100x400+300+300")
+    root.title("Restaurant Reservation System")
+    app = RestaurantReservationSystem(root)
+    root.mainloop()
+
+
+main()
